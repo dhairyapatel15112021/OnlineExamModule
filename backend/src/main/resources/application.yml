@@ -1,0 +1,20 @@
+spring:
+  # security:
+  #   user:
+  #     name: Dhairya
+  #     password: Patel
+  datasource: 
+    url: jdbc:postgresql://ep-dry-cake-a51urp3r.us-east-2.aws.neon.tech/CohortDB?sslmode=require
+    username: CohortDB_owner
+    password: 2dtmuxvL5fBK
+  jpa:
+    hibernate:
+      ddl-auto: update
+      # above means we have to drop schema at the end of seassion
+      # ddl-auto : update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+    #using above we can see which sql query is fired to get the output for specific command.
