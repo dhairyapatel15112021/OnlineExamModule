@@ -1,3 +1,5 @@
+server:
+  port: 5151
 spring:
   # security:
   #   user:
