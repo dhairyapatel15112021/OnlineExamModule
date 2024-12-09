@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import com.example.service.student.studentService;
 
 @RestController
 @CrossOrigin
+@PreAuthorize("hasRole('USER')")
 @RequestMapping("/api/v1")
 public class studentController {
 
@@ -52,7 +54,7 @@ public class studentController {
             if(checkAdmin != null){
                 throw new Exception("Exist with this email id");
             }
-            Boolean response = studentservice.createAdmin(student);
+            Boolean response = studentservice.createStudent(student);
             if(!response){
                 throw new Exception("Problem While saving the Student");
             }

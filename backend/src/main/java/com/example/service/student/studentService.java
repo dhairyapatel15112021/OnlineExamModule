@@ -20,7 +20,7 @@ public class studentService {
         return studentRepo.findByEmailId(email);
     }
     
-    public Boolean createAdmin(Student student){
+    public Boolean createStudent(Student student){
         try{
             studentRepo.save(student);
             return true;
