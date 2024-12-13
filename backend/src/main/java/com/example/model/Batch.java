@@ -23,6 +23,12 @@ public class Batch {
         this.id = id;
         this.year = year;
     }
+
+    
+    public Batch() {
+    }
+
+
     public int getId() {
         return id;
     }

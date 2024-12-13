@@ -36,32 +36,5 @@ public class studentController {
         return studentservice.getStudents();
     }
 
-    @PostMapping("/student")
-    public Student student(@RequestBody studentRequest request){
-        return studentservice.getStudent(request.emailId());
-    }
-
-    record studentRequest(String emailId){}
-
-    @PostMapping("/student/register")
-    public ResponseEntity<String> createStudent(@RequestBody Student student){
-        try{
-            Student checkStudent = studentservice.getStudent(student.getEmailId());
-            if(checkStudent != null){
-                throw new Exception("Student Already Registed");
-            }
-            Admin checkAdmin = adminservice.getAdmin(student.getEmailId());
-            if(checkAdmin != null){
-                throw new Exception("Exist with this email id");
-            }
-            Boolean response = studentservice.createStudent(student);
-            if(!response){
-                throw new Exception("Problem While saving the Student");
-            }
-            return new ResponseEntity<String>("Registered", HttpStatus.OK);
-        }
-        catch(Exception e){
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
+   
 }

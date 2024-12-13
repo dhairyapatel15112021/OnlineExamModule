@@ -1,5 +1,7 @@
 package com.example.service.admin;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.model.Admin;
 import com.example.repository.admin.AdminRepository;
@@ -8,6 +10,7 @@ import com.example.repository.admin.AdminRepository;
 public class adminService {
     
     private AdminRepository adminRepo;
+    private final PasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     public adminService(AdminRepository adminRepo) {
         this.adminRepo = adminRepo;
@@ -19,6 +22,7 @@ public class adminService {
 
     public Boolean createAdmin(Admin admin){
         try{
+            admin.setPassword(encoder.encode(admin.getPassword()));
             adminRepo.save(admin);
             return true;
         }

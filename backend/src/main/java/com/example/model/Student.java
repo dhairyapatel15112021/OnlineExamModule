@@ -110,10 +110,20 @@ public class Student {
         this.mobileNumber = mobileNumber;
     }
 
-    @Override
-    public String toString() {
-        return "Student [id=" + id + ", emailId=" + emailId + ", password=" + password + ", name=" + name
-                + ", enrollmentNumber=" + enrollmentNumber + ", mobileNumber=" + mobileNumber + "]";
+    public College getClg() {
+        return clg;
+    }
+
+    public void setClg(College clg) {
+        this.clg = clg;
+    }
+
+    public Batch getBatch() {
+        return batch;
+    }
+
+    public void setBatch(Batch batch) {
+        this.batch = batch;
     }
 
     @Override
@@ -180,5 +190,13 @@ public class Student {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Student [id=" + id + ", emailId=" + emailId + ", password=" + password + ", name=" + name
+                + ", enrollmentNumber=" + enrollmentNumber + ", mobileNumber=" + mobileNumber + ", clg=" + clg
+                + ", batch=" + batch + "]";
+    }
+
+   
     
 }
