@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "test")
@@ -38,6 +39,7 @@ public class Test {
     private int totalProgrammingQuestion;
 
     @Column(name = "time")
+    @Pattern(regexp = "^([01]\\d|2[0-3]):([0-5]\\d)$", message = "Invalid time format")
     private LocalTime time;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,6 +49,8 @@ public class Test {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id" , referencedColumnName = "id")
     private Admin admin;
+
+    // test passing marks
 
     public Test(int id, String title, int totalApptitudeQuestion, int totalTechnicalQuestion,
             int totalProgrammingQuestion, LocalTime time, Batch batch, Admin admin) {

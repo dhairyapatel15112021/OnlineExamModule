@@ -3,18 +3,18 @@ package com.example.service.college;
 import org.springframework.stereotype.Service;
 
 import com.example.model.College;
-import com.example.repository.college.collegeRepository;
-import com.example.service.admin.adminService;
-import com.example.service.student.studentService;
+import com.example.repository.college.CollegeRepository;
+import com.example.service.admin.AdminService;
+import com.example.service.student.StudentService;
 
 @Service
-public class collegeService {
-    private final collegeRepository collegeRepository;
-    private final studentService studentService;
-    private final adminService adminService;
+public class CollegeService {
+    private final CollegeRepository collegeRepository;
+    private final StudentService studentService;
+    private final AdminService adminService;
 
 
-    public collegeService(collegeRepository collegeRepository,studentService studentService,adminService adminService) {
+    public CollegeService(CollegeRepository collegeRepository,StudentService studentService,AdminService adminService) {
         this.collegeRepository = collegeRepository;
         this.studentService = studentService;
         this.adminService = adminService;

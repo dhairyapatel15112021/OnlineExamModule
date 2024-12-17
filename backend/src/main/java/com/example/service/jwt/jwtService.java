@@ -20,11 +20,11 @@ import io.jsonwebtoken.security.Keys;
 import java.util.function.Function;
 
 @Service
-public class jwtService {
+public class JwtService {
 
     private String secretKey = "";
 
-    public jwtService(){
+    public JwtService(){
         try{
             KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
             SecretKey sk = keyGen.generateKey();
@@ -44,7 +44,7 @@ public class jwtService {
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         try {
             return Jwts.parser().verifyWith(getKey())
                     .build()
@@ -69,9 +69,10 @@ public class jwtService {
     }
 
 
-    public String generateToken(String username, String role) {
+    public String generateToken(String username, String role , int id) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles",role);
+        claims.put("id" , id);
         return Jwts.builder()
                 .claims()
                 .add(claims)

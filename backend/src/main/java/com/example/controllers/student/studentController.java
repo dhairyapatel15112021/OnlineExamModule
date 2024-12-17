@@ -14,19 +14,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.model.Admin;
 import com.example.model.Student;
-import com.example.service.admin.adminService;
-import com.example.service.student.studentService;
+import com.example.service.admin.AdminService;
+import com.example.service.student.StudentService;
 
 @RestController
 @CrossOrigin
 @PreAuthorize("hasRole('USER')")
 @RequestMapping("/api/v1")
-public class studentController {
+public class StudentController {
 
-    private studentService studentservice;
-    private adminService adminservice;
+    private StudentService studentservice;
+    private AdminService adminservice;
     
-    public studentController(studentService studentservice,adminService adminservice) {
+    public StudentController(StudentService studentservice,AdminService adminservice) {
         this.studentservice = studentservice;
         this.adminservice = adminservice;
     }

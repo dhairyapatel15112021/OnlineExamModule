@@ -7,12 +7,12 @@ import com.example.model.Admin;
 import com.example.repository.admin.AdminRepository;
 
 @Service
-public class adminService {
+public class AdminService {
     
     private AdminRepository adminRepo;
     private final PasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-    public adminService(AdminRepository adminRepo) {
+    public AdminService(AdminRepository adminRepo) {
         this.adminRepo = adminRepo;
     }
     

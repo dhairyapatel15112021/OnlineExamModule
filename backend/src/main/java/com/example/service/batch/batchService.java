@@ -3,13 +3,13 @@ package com.example.service.batch;
 import org.springframework.stereotype.Service;
 
 import com.example.model.Batch;
-import com.example.repository.batch.batchRepository;
+import com.example.repository.batch.BatchRepository;
 
 @Service
-public class batchService {
-    private final batchRepository batchRepository;
+public class BatchService {
+    private final BatchRepository batchRepository;
 
-    public batchService(com.example.repository.batch.batchRepository batchRepository) {
+    public BatchService(BatchRepository batchRepository) {
         this.batchRepository = batchRepository;
     }
 

@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.model.Batch;
 
-public interface batchRepository extends JpaRepository<Batch,Integer> {
+public interface BatchRepository extends JpaRepository<Batch,Integer> {
                                         
 }

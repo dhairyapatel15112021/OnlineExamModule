@@ -9,23 +9,25 @@ import org.springframework.stereotype.Service;
 import com.example.model.Batch;
 import com.example.model.College;
 import com.example.model.Student;
-import com.example.repository.batch.batchRepository;
-import com.example.repository.college.collegeRepository;
+import com.example.repository.batch.BatchRepository;
+import com.example.repository.college.CollegeRepository;
 import com.example.repository.student.StudentRepository;
 
 @Service
-public class studentService {
+public class StudentService {
     
     private final StudentRepository studentRepo;
-    private final collegeRepository collegeRepository;
-    private final batchRepository batchRepository;
+    private final CollegeRepository collegeRepository;
+    private final BatchRepository batchRepository;
     private final PasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-    public studentService(StudentRepository studentRepo,collegeRepository collegeRepository,batchRepository batchRepository) {
+  public StudentService(StudentRepository studentRepo, CollegeRepository collegeRepository, BatchRepository batchRepository) {
         this.studentRepo = studentRepo;
-        this.batchRepository = batchRepository;
         this.collegeRepository = collegeRepository;
+        this.batchRepository = batchRepository;
     }
+
+    
     
     public Student getStudent(String email){
         return studentRepo.findByEmailId(email);

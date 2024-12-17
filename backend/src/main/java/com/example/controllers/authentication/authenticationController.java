@@ -14,25 +14,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.model.Admin;
 import com.example.model.Student;
-import com.example.service.admin.adminService;
-import com.example.service.college.collegeService;
-import com.example.service.jwt.jwtService;
-import com.example.service.student.studentService;
+import com.example.service.admin.AdminService;
+import com.example.service.college.CollegeService;
+import com.example.service.jwt.JwtService;
+import com.example.service.student.StudentService;
 
 @RestController
 @CrossOrigin
 @RequestMapping("/api/v1/auth")
-public class authenticationController {
+public class AuthenticationController {
 
-    private final adminService adminservice;
-    private final studentService studentservice;
-    private final collegeService collegeService;
-    private final jwtService jwtservice;
+    private final AdminService adminService;
+    private final StudentService studentservice;
+    private final CollegeService collegeService;
+    private final JwtService jwtservice;
     private final AuthenticationManager authenticationManager;
 
-    public authenticationController(adminService adminservice, studentService studentservice, jwtService jwtservice,collegeService collegeService,
+    public AuthenticationController(AdminService adminservice, StudentService studentservice, JwtService jwtservice,CollegeService collegeService,
             AuthenticationManager authenticationManager) {
-        this.adminservice = adminservice;
+        this.adminService = adminservice;
         this.studentservice = studentservice;
         this.jwtservice = jwtservice;
         this.authenticationManager = authenticationManager;
@@ -41,7 +41,7 @@ public class authenticationController {
 
     // @PostMapping("/admin")
     public Admin admin(@RequestBody adminRequest request){
-        return adminservice.getAdmin(request.emailId());
+        return adminService.getAdmin(request.emailId());
     }
 
     record adminRequest(String emailId){}
@@ -49,10 +49,10 @@ public class authenticationController {
     @PostMapping("/admin/register")
     public ResponseEntity<String> registerAdmin(@RequestBody Admin admin){
         try{
-            if(studentservice.getStudent(admin.getEmailId()) != null || adminservice.getAdmin(admin.getEmailId()) != null || collegeService.getCollege(admin.getEmailId()) != null){
+            if(studentservice.getStudent(admin.getEmailId()) != null || adminService.getAdmin(admin.getEmailId()) != null || collegeService.getCollege(admin.getEmailId()) != null){
                 throw new Exception("Exist with this email id");
             }
-            Boolean response = adminservice.createAdmin(admin);
+            Boolean response = adminService.createAdmin(admin);
             if(!response){
                 throw new Exception("Problem While Saving the admin");
             }
@@ -69,7 +69,7 @@ public class authenticationController {
             Student student = studentservice.getStudent(request.emailId());
             Admin admin = null;
             if (student == null) {
-                admin = adminservice.getAdmin(request.emailId());
+                admin = adminService.getAdmin(request.emailId());
             }
             if (student == null && admin == null) {
                 throw new Exception("Invalid Login Credientials");
@@ -81,9 +81,9 @@ public class authenticationController {
             }
             String token = null;
             if (student != null) {
-                token = jwtservice.generateToken(request.emailId(), "ROLE_USER");
+                token = jwtservice.generateToken(request.emailId(), "ROLE_USER" , student.getId());
             } else {
-                token = jwtservice.generateToken(request.emailId(), "ROLE_ADMIN");
+                token = jwtservice.generateToken(request.emailId(), "ROLE_ADMIN" , admin.getId());
             }
             return new ResponseEntity<>(token, HttpStatus.OK);
         } catch (Exception e) {
