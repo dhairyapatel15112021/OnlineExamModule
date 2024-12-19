@@ -28,4 +28,13 @@ public class ProgrammeService {
     public int getAllProgrammesCount(int testId){
         return programmeRepository.findByTest_IdAndCategory(testId , QuestionCategory.Programming).size();
     }
+
+    public Programme getProgramme(int programmeId){
+        try{
+            return programmeRepository.getReferenceById(programmeId);
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
 }

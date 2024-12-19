@@ -38,6 +38,9 @@ public class Test {
     @Column(name = "total_programming_question" , nullable = false)
     private int totalProgrammingQuestion;
 
+    @Column(name = "passing_percentage")
+    private float passingPercentage;
+
     @Column(name = "time")
     @Pattern(regexp = "^([01]\\d|2[0-3]):([0-5]\\d)$", message = "Invalid time format")
     private LocalTime time;
@@ -50,7 +53,6 @@ public class Test {
     @JoinColumn(name = "admin_id" , referencedColumnName = "id")
     private Admin admin;
 
-    // test passing marks
 
     public Test(int id, String title, int totalApptitudeQuestion, int totalTechnicalQuestion,
             int totalProgrammingQuestion, LocalTime time, Batch batch, Admin admin) {
