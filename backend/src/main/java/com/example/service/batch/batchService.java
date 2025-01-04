@@ -1,5 +1,7 @@
 package com.example.service.batch;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.model.Batch;
@@ -13,13 +15,20 @@ public class BatchService {
         this.batchRepository = batchRepository;
     }
 
-    public boolean createBatch(Batch batch){
+    public Batch createBatch(Batch batch){
         try{
-            batchRepository.save(batch);
-            return true;
+            return batchRepository.save(batch);
         }   
         catch(Exception e){
-            return false;
+            return null;
         }
+    }
+
+    public boolean isBatchExist(int year){
+        return batchRepository.findByYear(year) != null;
+    }
+
+    public List<Batch> getBatches(){
+        return batchRepository.findAll();
     }
 }

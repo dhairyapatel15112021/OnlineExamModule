@@ -1,6 +1,6 @@
 package com.example.service.test;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ public class TestService {
         return testRepository.findByTitle(testTitle);
     }
 
-    public Boolean createTest(Test test , int batchId, int adminId){
+    public Test createTest(Test test , int batchId, int adminId){
         try{
             if(checkTest(test.getTitle()) != null){
                 throw new Exception("Exam Exist With same title");
@@ -37,11 +37,10 @@ public class TestService {
             Batch batch = batchRepository.getReferenceById(batchId);
             test.setAdmin(admin);
             test.setBatch(batch);
-            testRepository.save(test);
-            return true;
+            return testRepository.save(test);
         }
         catch(Exception e){
-            return false;
+            return null;
         }
     }
 
@@ -52,6 +51,18 @@ public class TestService {
         }
         catch(Exception e){
             return null;
+        }
+    }
+
+    public List<Test> getTests() {
+        try{
+            System.out.println("tests : ");
+            System.out.println(testRepository.findAll());
+            return testRepository.findAll();
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+            return List.of();
         }
     }
 

@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.model.Batch;
 
 public interface BatchRepository extends JpaRepository<Batch,Integer> {
-                                        
+             
+    Batch findByYear(int year);
 }

@@ -20,10 +20,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
     private final UserDetailsService userDetailsService;
     private final JwtFilter jwtFilter;
+    private final CustomCorsFilter customCorsFilter;
 
-    public SecurityConfiguration(UserDetailsService userDetailsService, JwtFilter jwtFilter) {
+    public SecurityConfiguration(UserDetailsService userDetailsService, JwtFilter jwtFilter,CustomCorsFilter customCorsFilter) {
         this.userDetailsService = userDetailsService;
         this.jwtFilter = jwtFilter;
+        this.customCorsFilter = customCorsFilter;
     }
 
     @Bean
@@ -34,6 +36,7 @@ public class SecurityConfiguration {
                 .requestMatchers("/api/v1/student/**").hasRole("USER")
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated())
+                .cors(c -> c.configurationSource(customCorsFilter))
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

@@ -39,89 +39,42 @@ public class Test {
     private int totalProgrammingQuestion;
 
     @Column(name = "passing_percentage")
-    private float passingPercentage;
+    private Double passingPercentage = 0.0;
 
-    @Column(name = "time")
+    @Column(name = "time" , nullable = false)
     @Pattern(regexp = "^([01]\\d|2[0-3]):([0-5]\\d)$", message = "Invalid time format")
     private LocalTime time;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "batch_id" , referencedColumnName = "id")
+    @JoinColumn(name = "batch_id" ,nullable = false, referencedColumnName = "id")
     private Batch batch;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_id" , referencedColumnName = "id")
+    @JoinColumn(name = "admin_id" ,nullable = false, referencedColumnName = "id")
     private Admin admin;
 
 
-    public Test(int id, String title, int totalApptitudeQuestion, int totalTechnicalQuestion,
-            int totalProgrammingQuestion, LocalTime time, Batch batch, Admin admin) {
+
+
+    public Test(int id, String title,
+            @Min(value = 0, message = "Question Number Should be Positive") int totalApptitudeQuestion,
+            @Min(value = 0, message = "Question Number Should be Positive") int totalTechnicalQuestion,
+            @Min(value = 0, message = "Question Number Should be Positive") int totalProgrammingQuestion,
+            Double passingPercentage,
+            @Pattern(regexp = "^([01]\\d|2[0-3]):([0-5]\\d)$", message = "Invalid time format") LocalTime time,
+            Batch batch, Admin admin) {
         this.id = id;
         this.title = title;
         this.totalApptitudeQuestion = totalApptitudeQuestion;
         this.totalTechnicalQuestion = totalTechnicalQuestion;
         this.totalProgrammingQuestion = totalProgrammingQuestion;
+        this.passingPercentage = passingPercentage;
         this.time = time;
         this.batch = batch;
         this.admin = admin;
     }
 
     public Test() {
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + id;
-        result = prime * result + ((title == null) ? 0 : title.hashCode());
-        result = prime * result + totalApptitudeQuestion;
-        result = prime * result + totalTechnicalQuestion;
-        result = prime * result + totalProgrammingQuestion;
-        result = prime * result + ((time == null) ? 0 : time.hashCode());
-        result = prime * result + ((batch == null) ? 0 : batch.hashCode());
-        result = prime * result + ((admin == null) ? 0 : admin.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Test other = (Test) obj;
-        if (id != other.id)
-            return false;
-        if (title == null) {
-            if (other.title != null)
-                return false;
-        } else if (!title.equals(other.title))
-            return false;
-        if (totalApptitudeQuestion != other.totalApptitudeQuestion)
-            return false;
-        if (totalTechnicalQuestion != other.totalTechnicalQuestion)
-            return false;
-        if (totalProgrammingQuestion != other.totalProgrammingQuestion)
-            return false;
-        if (time == null) {
-            if (other.time != null)
-                return false;
-        } else if (!time.equals(other.time))
-            return false;
-        if (batch == null) {
-            if (other.batch != null)
-                return false;
-        } else if (!batch.equals(other.batch))
-            return false;
-        if (admin == null) {
-            if (other.admin != null)
-                return false;
-        } else if (!admin.equals(other.admin))
-            return false;
-        return true;
     }
 
     public int getId() {
@@ -164,6 +117,14 @@ public class Test {
         this.totalProgrammingQuestion = totalProgrammingQuestion;
     }
 
+    public Double getPassingPercentage() {
+        return passingPercentage;
+    }
+
+    public void setPassingPercentage(Double passingPercentage) {
+        this.passingPercentage = passingPercentage;
+    }
+
     public LocalTime getTime() {
         return time;
     }
@@ -188,5 +149,74 @@ public class Test {
         this.admin = admin;
     }
 
-    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + id;
+        result = prime * result + ((title == null) ? 0 : title.hashCode());
+        result = prime * result + totalApptitudeQuestion;
+        result = prime * result + totalTechnicalQuestion;
+        result = prime * result + totalProgrammingQuestion;
+        result = prime * result + ((passingPercentage == null) ? 0 : passingPercentage.hashCode());
+        result = prime * result + ((time == null) ? 0 : time.hashCode());
+        result = prime * result + ((batch == null) ? 0 : batch.hashCode());
+        result = prime * result + ((admin == null) ? 0 : admin.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Test other = (Test) obj;
+        if (id != other.id)
+            return false;
+        if (title == null) {
+            if (other.title != null)
+                return false;
+        } else if (!title.equals(other.title))
+            return false;
+        if (totalApptitudeQuestion != other.totalApptitudeQuestion)
+            return false;
+        if (totalTechnicalQuestion != other.totalTechnicalQuestion)
+            return false;
+        if (totalProgrammingQuestion != other.totalProgrammingQuestion)
+            return false;
+        if (passingPercentage == null) {
+            if (other.passingPercentage != null)
+                return false;
+        } else if (!passingPercentage.equals(other.passingPercentage))
+            return false;
+        if (time == null) {
+            if (other.time != null)
+                return false;
+        } else if (!time.equals(other.time))
+            return false;
+        if (batch == null) {
+            if (other.batch != null)
+                return false;
+        } else if (!batch.equals(other.batch))
+            return false;
+        if (admin == null) {
+            if (other.admin != null)
+                return false;
+        } else if (!admin.equals(other.admin))
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Test [id=" + id + ", title=" + title + ", totalApptitudeQuestion=" + totalApptitudeQuestion
+                + ", totalTechnicalQuestion=" + totalTechnicalQuestion + ", totalProgrammingQuestion="
+                + totalProgrammingQuestion + ", passingPercentage=" + passingPercentage + ", time=" + time + ", batch="
+                + batch + ", admin=" + admin + "]";
+    }
+
+        
 }

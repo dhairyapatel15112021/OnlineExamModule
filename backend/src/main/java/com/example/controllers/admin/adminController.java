@@ -3,20 +3,28 @@ package com.example.controllers.admin;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.dto.McqRegister;
+import com.example.dto.ProgrammeRegister;
+import com.example.dto.TestGet;
 import com.example.model.Batch;
 import com.example.model.College;
+import com.example.model.Languages;
 import com.example.model.Mcq;
 import com.example.model.Programme;
 import com.example.model.Question;
@@ -27,6 +35,7 @@ import com.example.model.Question.QuestionCategory;
 import com.example.service.admin.AdminService;
 import com.example.service.batch.BatchService;
 import com.example.service.college.CollegeService;
+import com.example.service.language.LanguageService;
 import com.example.service.mcq.McqService;
 import com.example.service.programme.ProgrammeService;
 import com.example.service.student.StudentService;
@@ -49,10 +58,11 @@ public class AdminController {
     private final McqService mcqService;
     private final ProgrammeService programmeService;
     private final TestcasesService testcasesService;
+    private final LanguageService languageService;
 
     public AdminController(AdminService adminservice, StudentService studentservice, CollegeService collegeService,
             BatchService batchService, TestService testService, McqService mcqService,
-            ProgrammeService programmeService,TestcasesService testcasesService) {
+            ProgrammeService programmeService,TestcasesService testcasesService,LanguageService languageService) {
         this.adminservice = adminservice;
         this.studentservice = studentservice;
         this.collegeService = collegeService;
@@ -61,12 +71,9 @@ public class AdminController {
         this.mcqService = mcqService;
         this.programmeService = programmeService;
         this.testcasesService = testcasesService;
+        this.languageService = languageService;
     }
 
-    @GetMapping("/students")
-    public List<Student> students() {
-        return studentservice.getStudents();
-    }
 
     // @PostMapping("/student")
     public Student student(@RequestBody studentRequest request) {
@@ -75,6 +82,22 @@ public class AdminController {
 
     record studentRequest(String emailId) {
     }
+
+    @GetMapping("/student/get")
+    public ResponseEntity<getStudentResponse> getStudents(){
+        try{
+            List<Student> students = studentservice.getStudents();
+            if(students.isEmpty()){
+                throw new Exception("No Students");
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(new getStudentResponse(students));
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new getStudentResponse(List.of()));
+        }
+    }
+
+    record getStudentResponse(List<Student> students){};
 
     @PostMapping("/student/register")
     public ResponseEntity<studentRegisterResponse> createStudent(
@@ -123,31 +146,89 @@ public class AdminController {
     };
 
     @PostMapping("/clg/register")
-    public ResponseEntity<String> createCollege(@RequestBody College clg) {
+    public ResponseEntity<clgRegisterResponse> createCollege(@RequestBody College clg) {
         try {
-            if (collegeService.createCollege(clg)) {
-                return new ResponseEntity<String>("College Created Succesfully", HttpStatus.OK);
+            College college = collegeService.createCollege(clg);
+            if (college != null) {
+                return new ResponseEntity<>(new clgRegisterResponse(college.getId()), HttpStatus.OK);
             }
             throw new Exception("Something Went Wrong");
         } catch (Exception e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
+
+    record clgRegisterResponse(int id){}
 
     @PostMapping("/batch/create")
-    public ResponseEntity<String> createBatch(@RequestBody Batch batch) {
+    public ResponseEntity<batchCreateResponse> createBatch(@RequestBody Batch batch) {
         try {
-            if (batchService.createBatch(batch)) {
-                return new ResponseEntity<String>("Batch Created Succesfully", HttpStatus.OK);
+            if(batchService.isBatchExist(batch.getYear())){
+                throw new Exception("Already Batch Existed");
+            }
+            Batch createdBatch = batchService.createBatch(batch);
+            if (createdBatch != null) {
+                return new ResponseEntity<>(new batchCreateResponse(createdBatch.getId()), HttpStatus.OK);
             }
             throw new Exception("Something Went Wrong");
         } catch (Exception e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new batchCreateResponse(0), HttpStatus.BAD_REQUEST);
         }
     }
 
+    record batchCreateResponse(int id) {};
+
+    @GetMapping("/batch/get")
+    public ResponseEntity<getBatchResponse> getBatches(){
+        try{
+            List<Batch> batches = batchService.getBatches();
+            if(batches.isEmpty()){
+                throw new Exception("No Batches");
+            }
+            return new ResponseEntity<getBatchResponse>(new getBatchResponse(batches), HttpStatus.OK);
+        }
+        catch(Exception e){
+            return new ResponseEntity<getBatchResponse>(new getBatchResponse(List.of()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    record getBatchResponse(List<Batch> batch) {};
+
+    @GetMapping("/tests/get")
+    public ResponseEntity<getTestResponse> getTests(){
+        try{
+            List<Test> tests = testService.getTests();
+            if(tests.isEmpty()){
+                throw new Exception("No Tests");
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(new getTestResponse(tests.stream().map(test -> new TestGet(test.getId(), test.getTitle(), test.getTotalApptitudeQuestion(), test.getTotalTechnicalQuestion(), test.getTotalProgrammingQuestion(), test.getPassingPercentage(), test.getTime(), test.getAdmin().getId(), test.getBatch().getId())).toList()));
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new getTestResponse(List.of()));
+        }
+    }
+    
+    record getTestResponse(List<TestGet> tests){}
+    
+    @GetMapping("/college/get")
+    public ResponseEntity<getCollegeResponse> getColleges(){
+        try{
+            List<College> colleges = collegeService.getCollges();
+            if(colleges.isEmpty()){
+                throw new Exception("No Collges Found");
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(new getCollegeResponse(colleges));
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new getCollegeResponse(null));
+        }
+    }
+
+    record getCollegeResponse(List<College> clg){};
+
     @PostMapping("/test/register")
-    public ResponseEntity<String> createTest(HttpServletRequest request,
+    public ResponseEntity<testRegisterResponse> createTest(HttpServletRequest request,
             @RequestBody testRegisterRequest testRegisterRequest) {
         try {
             Test test = new Test();
@@ -157,16 +238,18 @@ public class AdminController {
             test.setTotalProgrammingQuestion(testRegisterRequest.totalProgrammingQuestion());
             test.setTotalTechnicalQuestion(testRegisterRequest.totalTechnicalQuestion());
 
-            if (!testService.createTest(test, testRegisterRequest.batchId(),
-                    Integer.parseInt(request.getAttribute("id").toString()))) {
+            Test testCreated = testService.createTest(test, testRegisterRequest.batchId(),
+            Integer.parseInt(request.getAttribute("id").toString()));
+            if (testCreated == null) {
                 throw new Exception("Something Went Wrong");
             }
-
-            return new ResponseEntity<String>("Test Registered", HttpStatus.CREATED);
+            return new ResponseEntity<>(new testRegisterResponse(testCreated.getId()), HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new testRegisterResponse(0), HttpStatus.BAD_REQUEST);
         }
     }
+
+    record testRegisterResponse(int id){};
 
     record testRegisterRequest(String title, int totalApptitudeQuestion, int totalProgrammingQuestion,
             int totalTechnicalQuestion, LocalTime time, int batchId) {
@@ -187,7 +270,7 @@ public class AdminController {
         }
 
         ArrayList<mcqRegisterRequest> mcqUnsuceesfull = new ArrayList<>();
-        ArrayList<mcqRegisterRequest> mcqSuceesfull = new ArrayList<>();
+        ArrayList<McqRegister> mcqSuceesfull = new ArrayList<>();
         mcqRegisterResponse mcqRegisterResponse = new mcqRegisterResponse(mcqSuceesfull, mcqUnsuceesfull);
         int mcqApptitudeCount = test.getTotalApptitudeQuestion();
         int mcqTechnicalCount = test.getTotalTechnicalQuestion();
@@ -212,18 +295,24 @@ public class AdminController {
                 newMcqInstance.setQuestionDescription(mcq.questionDescription());
 
                 if (mcq.category() == QuestionCategory.Apptitude && apptitudeCount < mcqApptitudeCount) {
-                    if (mcqService.createMcq(newMcqInstance)) {
+                    Mcq mcqCreated = mcqService.createMcq(newMcqInstance);
+                    if (mcqCreated != null) {
                         apptitudeCount += 1;
-                        mcqSuceesfull.add(mcq);
+                        mcqSuceesfull.add(
+                            new McqRegister(mcqCreated.getId(), testId, mcqCreated.getQuestionDescription(), mcqCreated.getOption1(), mcqCreated.getOption2(), mcqCreated.getOption3(), mcq.option4(), mcqCreated.getCategory(), mcqCreated.getDifficulty(), mcqCreated.getPositiveMark(), mcqCreated.getNegativeMark(), mcqCreated.getCorrectAnswer())
+                        );
                     } else {
                         mcqUnsuceesfull.add(mcq);
                     }
                 }
 
                 else if (mcq.category() == QuestionCategory.Technical && technicalCount < mcqTechnicalCount) {
-                    if (mcqService.createMcq(newMcqInstance)) {
+                    Mcq mcqCreated = mcqService.createMcq(newMcqInstance);
+                    if (mcqCreated != null) {
                         technicalCount += 1;
-                        mcqSuceesfull.add(mcq);
+                        mcqSuceesfull.add(
+                            new McqRegister(mcqCreated.getId(), testId, mcqCreated.getQuestionDescription(), mcqCreated.getOption1(), mcqCreated.getOption2(), mcqCreated.getOption3(), mcq.option4(), mcqCreated.getCategory(), mcqCreated.getDifficulty(), mcqCreated.getPositiveMark(), mcqCreated.getNegativeMark(), mcqCreated.getCorrectAnswer())
+                        );
                     } else {
                         mcqUnsuceesfull.add(mcq);
                     }
@@ -256,8 +345,42 @@ public class AdminController {
             Question.Difficulty difficulty) {
     };
 
-    record mcqRegisterResponse(ArrayList<mcqRegisterRequest> success, ArrayList<mcqRegisterRequest> failure) {
+    record mcqRegisterResponse(ArrayList<McqRegister> success, ArrayList<mcqRegisterRequest> failure) {
     };
+
+    @GetMapping("/mcq/get/{id}")
+    public ResponseEntity<getMcqResponse> getMcqs(@PathVariable("id") int id){
+        try{
+            List<Mcq> mcqs = mcqService.getAllMcqs(id);
+            if(mcqs.isEmpty()){
+                throw new Exception("No Mcqs Found");
+            }
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(
+                        new getMcqResponse(mcqs.stream().map(mcq -> new McqRegister(mcq.getId(), mcq.getTest().getId(), mcq.getQuestionDescription(), mcq.getOption1(), mcq.getOption2(), mcq.getOption3(), mcq.getOption4(), mcq.getCategory(), mcq.getDifficulty(), mcq.getPositiveMark(), mcq.getNegativeMark(), mcq.getCorrectAnswer())).toList())
+                    );
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new getMcqResponse(List.of()));
+        }
+    }
+
+    record getMcqResponse(List<McqRegister> mcqs){}
+
+
+    @GetMapping("/programme/get/{id}")
+    public ResponseEntity<getProgrammeResponse> getProgrammes(@PathVariable("id") int id){
+        try{
+            List<Programme> programmes = programmeService.getProgrammes(id);
+            return ResponseEntity.status(HttpStatus.OK)
+                .body(new getProgrammeResponse(programmes.stream().map(programme -> new ProgrammeRegister(programme.getId(), programme.getQuestionDescription(), programme.getPositiveMark(), programme.getDifficulty(), programme.getCategory(), id)).toList()));
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new getProgrammeResponse(List.of()));
+        }
+    }
+
+    record getProgrammeResponse(List<ProgrammeRegister> programmes){};
 
     @PostMapping("/programme/register")
     public ResponseEntity<programmeRegisterResponse> createProgramme(
@@ -272,7 +395,7 @@ public class AdminController {
 
         int programmeCount = programmeService.getAllProgrammesCount(test.getId());
         int testProgrammeCount = test.getTotalProgrammingQuestion();
-        List<programmeRegisterRequest> programmeSucessfull = new ArrayList<>();
+        List<ProgrammeRegister> programmeSucessfull = new ArrayList<>();
         List<programmeRegisterRequest> programmeUnsucessfull = new ArrayList<>();
         programmeRegisterResponse programmeRegisterResponse = new programmeRegisterResponse(programmeSucessfull,
                 programmeUnsucessfull);
@@ -282,13 +405,14 @@ public class AdminController {
                 Programme newProgrammeInstance = new Programme();
                 newProgrammeInstance.setCategory(programme.category());
                 newProgrammeInstance.setDifficulty(programme.difficulty());
-                newProgrammeInstance.setPositiveMark(0);
+                newProgrammeInstance.setPositiveMark(programme.positiveMark());
                 newProgrammeInstance.setQuestionDescription(programme.questionDescription());
                 newProgrammeInstance.setTest(test);
                 if (newProgrammeInstance.getCategory() == QuestionCategory.Programming
                         && programmeCount < testProgrammeCount) {
-                    if (programmeService.createProgramne(newProgrammeInstance)) {
-                        programmeSucessfull.add(programme);
+                            Programme programmeCreated = programmeService.createProgramne(newProgrammeInstance);
+                    if (programmeCreated != null) {
+                        programmeSucessfull.add(new ProgrammeRegister(programmeCreated.getId(), programmeCreated.getQuestionDescription(), programmeCreated.getPositiveMark(), programmeCreated.getDifficulty(), programmeCreated.getCategory(), programmeCreated.getTest().getId()));
                         programmeCount += 1;
                     } else {
                         programmeUnsucessfull.add(programme);
@@ -315,7 +439,7 @@ public class AdminController {
             float positiveMark) {
     }
 
-    record programmeRegisterResponse(List<programmeRegisterRequest> success, List<programmeRegisterRequest> failure) {
+    record programmeRegisterResponse(List<ProgrammeRegister> success, List<programmeRegisterRequest> failure) {
     };
 
     @PostMapping("/testcases/register")
@@ -363,4 +487,21 @@ public class AdminController {
 
     record testcasesRegisterResponse(List<testcasesRegisterRequest> success, List<testcasesRegisterRequest> failure) {
     };
+
+    @PostMapping("/register/languages")
+    public ResponseEntity<Boolean> registerLanguages(@RequestBody List<Languages> languages){
+        try{
+            if(languages == null){
+                throw new Exception("Something Went Wrong");
+            }
+            if(languageService.registerLanguages(languages)){
+                return ResponseEntity.status(HttpStatus.OK).body(true);
+            }
+            throw new Exception("Something Went Wrong");
+            
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+        }
+    }
 }

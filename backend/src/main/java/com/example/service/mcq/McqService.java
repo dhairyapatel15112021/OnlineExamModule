@@ -22,14 +22,17 @@ public class McqService {
         return mcqRepository.findByTest_Id(id);
     }
 
+    public Mcq getMcq(int id){
+        return mcqRepository.getReferenceById(id);
+    }
+
     @Transactional
-    public boolean createMcq(Mcq mcq){
+    public Mcq createMcq(Mcq mcq){
         try{
-            mcqRepository.save(mcq);
-            return true;
+            return mcqRepository.save(mcq);
         }
         catch(Exception e){
-            return false;
+            return null;
         }
     }
 

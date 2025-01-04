@@ -1,5 +1,7 @@
 package com.example.service.programme;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.model.Programme;
@@ -15,13 +17,12 @@ public class ProgrammeService {
         this.programmeRepository = programmeRepository;
     }
 
-    public boolean createProgramne(Programme programme){
+    public Programme createProgramne(Programme programme){
         try{
-            programmeRepository.save(programme);
-            return true;
+            return programmeRepository.save(programme);
         }
         catch(Exception e){
-            return false;
+            return null;
         }
     }
 
@@ -36,5 +37,9 @@ public class ProgrammeService {
         catch(Exception e){
             return null;
         }
+    }
+
+    public List<Programme> getProgrammes(int testId){
+        return programmeRepository.findByTest_Id(testId);
     }
 }

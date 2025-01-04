@@ -32,6 +32,10 @@ public class StudentService {
     public Student getStudent(String email){
         return studentRepo.findByEmailId(email);
     }
+
+    public Student getStudent(int id){
+        return studentRepo.getReferenceById(id);
+    }
     
     public Boolean createStudent(Student student ,int batchId , int clgId){
         try{

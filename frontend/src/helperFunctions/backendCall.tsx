@@ -1,30 +1,40 @@
 import axios, { AxiosRequestConfig } from 'axios';
+import { backendData, backendResponse } from '../data/Interface';
 
-interface backendData{
-    url : string,
-    method : string,
-    data? : any
-}
 
-export const backendCall = async (data : backendData) => {
-    const responseData = {data : "" , err : ""};
-    const abortController = new AbortController();
-    const axiosConfig : AxiosRequestConfig = {
-        url : data.url,
-        method : data.method,
-        signal : abortController.signal
+export const backendCall = async (data: backendData): Promise<backendResponse> => {
+
+    const responseData = { data: {}, err: "" };
+
+    for (let fields of data.fields) {
+        responseData.data = { ...responseData.data, fields };
     }
-    if(data.method !== 'GET' && data.data){
+
+    const abortController = new AbortController();
+    const axiosConfig: AxiosRequestConfig = {
+        url: data.url,
+        method: data.method,
+        signal: abortController.signal,
+    }
+
+    if (data.method !== 'GET' && data.data) {
         axiosConfig.data = data.data;
     }
-    try{
+
+    if (data.header && data.header.trim() != "") {
+        axiosConfig.headers = { Authorization: data.header};
+    }
+
+    try {
+        console.log(axiosConfig);
         const response = await axios(axiosConfig);
         responseData.data = response.data;
     }
-    catch(err : any){
+    catch (err: any) {
         responseData.err = err.response?.data || err.message;
     }
-    return {...responseData, abort: () => abortController.abort()};
+
+    return { ...responseData, abort: () => abortController.abort() };
 }
 
 /*

@@ -1,5 +1,7 @@
 package com.example.service.college;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.model.College;
@@ -24,7 +26,7 @@ public class CollegeService {
         return collegeRepository.findByEmailId(emailId);
     }
 
-    public boolean createCollege(College clg){
+    public College createCollege(College clg){
         try{
             if(studentService.getStudent(clg.getEmailId()) != null || adminService.getAdmin(clg.getEmailId()) != null || getCollege(clg.getEmailId()) != null){
                 throw new Exception("Invalid Credentials");
@@ -32,11 +34,20 @@ public class CollegeService {
             if(clg.getContactNumber().length() != 10){
                 throw new Exception("Invalid Contact Number, length Should be Length of 10 digit");
             }
-            collegeRepository.save(clg);
-            return true;
+            College college = collegeRepository.save(clg);
+            return college;
         }
         catch(Exception e){
-            return false;
+            return null;
+        }
+    }
+
+    public List<College> getCollges() {
+        try{
+            return collegeRepository.findAll();
+        }
+        catch(Exception e){
+            return List.of();
         }
     }
 }

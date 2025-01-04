@@ -30,7 +30,8 @@ public class AuthenticationController {
     private final JwtService jwtservice;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationController(AdminService adminservice, StudentService studentservice, JwtService jwtservice,CollegeService collegeService,
+    public AuthenticationController(AdminService adminservice, StudentService studentservice, JwtService jwtservice,
+            CollegeService collegeService,
             AuthenticationManager authenticationManager) {
         this.adminService = adminservice;
         this.studentservice = studentservice;
@@ -40,31 +41,36 @@ public class AuthenticationController {
     }
 
     // @PostMapping("/admin")
-    public Admin admin(@RequestBody adminRequest request){
+    public Admin admin(@RequestBody adminRequest request) {
         return adminService.getAdmin(request.emailId());
     }
 
-    record adminRequest(String emailId){}
-    
+    record adminRequest(String emailId) {
+    }
+
     @PostMapping("/admin/register")
-    public ResponseEntity<String> registerAdmin(@RequestBody Admin admin){
-        try{
-            if(studentservice.getStudent(admin.getEmailId()) != null || adminService.getAdmin(admin.getEmailId()) != null || collegeService.getCollege(admin.getEmailId()) != null){
+    public ResponseEntity<adminRegistrationResponse> registerAdmin(@RequestBody Admin admin) {
+        try {
+            if (studentservice.getStudent(admin.getEmailId()) != null
+                    || adminService.getAdmin(admin.getEmailId()) != null
+                    || collegeService.getCollege(admin.getEmailId()) != null) {
                 throw new Exception("Exist with this email id");
             }
             Boolean response = adminService.createAdmin(admin);
-            if(!response){
+            if (!response) {
                 throw new Exception("Problem While Saving the admin");
             }
-            return new ResponseEntity<String>("Registered",HttpStatus.CREATED);
-        }
-        catch(Exception e){
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new adminRegistrationResponse("Registered"), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
+    record adminRegistrationResponse(String message) {}
+
     @PostMapping("/login")
-    public ResponseEntity<String> authLogin(@RequestBody loginRequest request) {
+    public ResponseEntity<loginResponse> authLogin(@RequestBody loginRequest request) {
+
         try {
             Student student = studentservice.getStudent(request.emailId());
             Admin admin = null;
@@ -79,29 +85,38 @@ public class AuthenticationController {
             if (!authentication.isAuthenticated()) {
                 throw new Exception("Invalid Login Credentials");
             }
-            String token = null;
+
             if (student != null) {
-                token = jwtservice.generateToken(request.emailId(), "ROLE_USER" , student.getId());
+                String token = jwtservice.generateToken(request.emailId(), "ROLE_USER", student.getId());
+                loginResponse loginResponse = new loginResponse(token, false);
+                return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+                // we have to do like this because of final keyword while declaring variable in
+                // the record.
             } else {
-                token = jwtservice.generateToken(request.emailId(), "ROLE_ADMIN" , admin.getId());
+                String token = jwtservice.generateToken(request.emailId(), "ROLE_ADMIN", admin.getId());
+                loginResponse loginResponse = new loginResponse(token, true);
+                return new ResponseEntity<>(loginResponse, HttpStatus.OK);
             }
-            return new ResponseEntity<>(token, HttpStatus.OK);
+
         } catch (Exception e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
     record loginRequest(String emailId, String password) {
     }
 
+    record loginResponse(String token, boolean isAdmin) {
+    }
+
     @PostMapping("/logout")
-    public ResponseEntity<String> authLogout(){
-        try{
+    public ResponseEntity<logoutResponse> authLogout() {
+        try {
             SecurityContextHolder.clearContext();
-            return new ResponseEntity<String>("Logout Sucessfully", HttpStatus.OK);
-        }
-        catch(Exception e){
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new logoutResponse("Succefully logout"), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new logoutResponse("ERROR"), HttpStatus.BAD_REQUEST);
         }
     }
+    record logoutResponse(String message){}
 }

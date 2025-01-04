@@ -1,10 +1,9 @@
 package com.example.model;
 
-import com.example.model.Question.Difficulty;
-import com.example.model.Question.QuestionCategory;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,7 +15,7 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "Programme")
-public class Programme {
+public class Programme extends Question {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,15 +30,17 @@ public class Programme {
     private float positiveMark;
 
     @Column(name = "difficulty" , nullable = false)
-    private Question.Difficulty difficulty;
+    @Enumerated(EnumType.STRING)
+    private Difficulty difficulty;
 
     @Column(name = "question_category" , nullable = false)
-    private Question.QuestionCategory category = QuestionCategory.Programming;
+    @Enumerated(EnumType.STRING)
+    private QuestionCategory category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "test_id",nullable = false,referencedColumnName = "id")
     private Test test;
-
+    
     public Programme(int id, String questionDescription,
             @Size(min = 0, message = "Marks Should be positive") float positiveMark, Difficulty difficulty,
             QuestionCategory category, Test test) {
@@ -78,19 +79,19 @@ public class Programme {
         this.positiveMark = positiveMark;
     }
 
-    public Question.Difficulty getDifficulty() {
+    public Difficulty getDifficulty() {
         return difficulty;
     }
 
-    public void setDifficulty(Question.Difficulty difficulty) {
+    public void setDifficulty(Difficulty difficulty) {
         this.difficulty = difficulty;
     }
 
-    public Question.QuestionCategory getCategory() {
+    public QuestionCategory getCategory() {
         return category;
     }
 
-    public void setCategory(Question.QuestionCategory category) {
+    public void setCategory(QuestionCategory category) {
         this.category = category;
     }
 
@@ -100,12 +101,6 @@ public class Programme {
 
     public void setTest(Test test) {
         this.test = test;
-    }
-
-    @Override
-    public String toString() {
-        return "Programme [id=" + id + ", questionDescription=" + questionDescription + ", positiveMark=" + positiveMark
-                + ", difficulty=" + difficulty + ", category=" + category + ", test=" + test + "]";
     }
 
     @Override
@@ -151,7 +146,13 @@ public class Programme {
         return true;
     }
 
-   
+    @Override
+    public String toString() {
+        return "Programme [id=" + id + ", questionDescription=" + questionDescription + ", positiveMark=" + positiveMark
+                + ", difficulty=" + difficulty + ", category=" + category + ", test=" + test + "]";
+    }
+
+    
 
     
 }
