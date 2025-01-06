@@ -1,5 +1,5 @@
 server:
-  port: 5151
+  port: ${PORT:5151}
 
 api-key: d08a9b105dmsheea44103114ce67p13b7a7jsnf9b1e02f32cb
 
