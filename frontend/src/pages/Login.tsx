@@ -17,7 +17,7 @@ export const Login = () => {
 
   useEffect(() => {
     if (user.emailId.trim() != "") {
-      navigate(user.isAdmin ? "/admin/dashboard" : "");
+      navigate(user.isAdmin ? "/admin/dashboard" : "/student/dashboard");
       return;
     }
    navigate("/login");

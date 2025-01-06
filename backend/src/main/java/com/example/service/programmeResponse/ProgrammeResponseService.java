@@ -154,4 +154,8 @@ public class ProgrammeResponseService {
         programmeResponse.setTrue(bool);
         programmeResponseRepository.save(programmeResponse);
     }
+
+    public List<ProgrammeResponse> getAllProgrammes(int studentId, int testId) {
+        return programmeResponseRepository.findByStudent_id(testId, studentId);
+    }
 }

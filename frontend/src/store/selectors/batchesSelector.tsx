@@ -1,7 +1,7 @@
 import { selector } from "recoil";
 import { backendCall } from "../../helperFunctions/backendCall";
 import { ApiEndPoints } from "../../data/ApiEndPoints";
-
+// fetch batches
 export const batch = selector({
     key : "uniqueBatchesSelector",
     get : async () => {

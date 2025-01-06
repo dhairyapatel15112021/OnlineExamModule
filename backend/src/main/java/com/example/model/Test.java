@@ -2,8 +2,12 @@ package com.example.model;
 
 import java.time.LocalTime;
 
+import com.example.model.Status.status;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -49,12 +53,13 @@ public class Test {
     @JoinColumn(name = "batch_id" ,nullable = false, referencedColumnName = "id")
     private Batch batch;
 
+    @Column(name = "test_status" , nullable = false)
+    @Enumerated(EnumType.ORDINAL)
+    private status testStatus = status.NotStarted;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id" ,nullable = false, referencedColumnName = "id")
     private Admin admin;
-
-
-
 
     public Test(int id, String title,
             @Min(value = 0, message = "Question Number Should be Positive") int totalApptitudeQuestion,
@@ -62,7 +67,7 @@ public class Test {
             @Min(value = 0, message = "Question Number Should be Positive") int totalProgrammingQuestion,
             Double passingPercentage,
             @Pattern(regexp = "^([01]\\d|2[0-3]):([0-5]\\d)$", message = "Invalid time format") LocalTime time,
-            Batch batch, Admin admin) {
+            Batch batch, status testStatus, Admin admin) {
         this.id = id;
         this.title = title;
         this.totalApptitudeQuestion = totalApptitudeQuestion;
@@ -71,6 +76,7 @@ public class Test {
         this.passingPercentage = passingPercentage;
         this.time = time;
         this.batch = batch;
+        this.testStatus = testStatus;
         this.admin = admin;
     }
 
@@ -141,12 +147,28 @@ public class Test {
         this.batch = batch;
     }
 
+    public status getTestStatus() {
+        return testStatus;
+    }
+
+    public void setTestStatus(status testStatus) {
+        this.testStatus = testStatus;
+    }
+
     public Admin getAdmin() {
         return admin;
     }
 
     public void setAdmin(Admin admin) {
         this.admin = admin;
+    }
+
+    @Override
+    public String toString() {
+        return "Test [id=" + id + ", title=" + title + ", totalApptitudeQuestion=" + totalApptitudeQuestion
+                + ", totalTechnicalQuestion=" + totalTechnicalQuestion + ", totalProgrammingQuestion="
+                + totalProgrammingQuestion + ", passingPercentage=" + passingPercentage + ", time=" + time + ", batch="
+                + batch + ", testStatus=" + testStatus + ", admin=" + admin + "]";
     }
 
     @Override
@@ -161,6 +183,7 @@ public class Test {
         result = prime * result + ((passingPercentage == null) ? 0 : passingPercentage.hashCode());
         result = prime * result + ((time == null) ? 0 : time.hashCode());
         result = prime * result + ((batch == null) ? 0 : batch.hashCode());
+        result = prime * result + ((testStatus == null) ? 0 : testStatus.hashCode());
         result = prime * result + ((admin == null) ? 0 : admin.hashCode());
         return result;
     }
@@ -202,6 +225,8 @@ public class Test {
                 return false;
         } else if (!batch.equals(other.batch))
             return false;
+        if (testStatus != other.testStatus)
+            return false;
         if (admin == null) {
             if (other.admin != null)
                 return false;
@@ -210,13 +235,7 @@ public class Test {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "Test [id=" + id + ", title=" + title + ", totalApptitudeQuestion=" + totalApptitudeQuestion
-                + ", totalTechnicalQuestion=" + totalTechnicalQuestion + ", totalProgrammingQuestion="
-                + totalProgrammingQuestion + ", passingPercentage=" + passingPercentage + ", time=" + time + ", batch="
-                + batch + ", admin=" + admin + "]";
-    }
-
+   
+    
         
 }

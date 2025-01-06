@@ -7,13 +7,8 @@ import { useEffect } from 'react';
 
 export const Test = () => {
     const {id} = useParams();
-    const navigate = useNavigate();
     const tests = useRecoilValue<TestInterface[]>(TestAtom);
     const test : TestInterface = tests.filter((item)=> item.id === parseInt(id || ""))?.[0] || null;
-
-    // useEffect(()=>{
-    //     navigate(`/admin/test/${id}/mcq`);
-    // },[]);
 
   return (
     <div className='p-7 flex flex-col gap-2 w-full h-ful'>

@@ -56,14 +56,24 @@ public class TestService {
 
     public List<Test> getTests() {
         try{
-            System.out.println("tests : ");
-            System.out.println(testRepository.findAll());
             return testRepository.findAll();
         }
         catch(Exception e){
             System.out.println(e.getMessage());
             return List.of();
         }
+    }
+
+    public List<Test> getTests(int studentId) {
+        return testRepository.findByStudentId(studentId);
+    }
+
+    public Test getTest(int testId) {
+        return testRepository.getReferenceById(testId);
+    }
+
+    public Test saveTest(Test test) {
+        return testRepository.save(test);
     }
 
 }

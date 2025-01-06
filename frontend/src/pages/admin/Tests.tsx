@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Input } from '../../components/Input';
 import { Buttons } from '../../components/Buttons';
 import { useRecoilState, useRecoilValue } from 'recoil';

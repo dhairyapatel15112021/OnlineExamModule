@@ -1,5 +1,7 @@
 package com.example.service.mcqResponse;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.model.McqResponse;
@@ -34,5 +36,9 @@ public class McqResponseService {
         catch(Exception e){
             return false;
         }
+    }
+
+    public List<McqResponse> getAllMcqs(int studentId, int testId) {
+        return mcqResponseRepository.findByStudent_id(testId, studentId);
     }
 }

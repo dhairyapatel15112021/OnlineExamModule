@@ -59,7 +59,7 @@ export interface McqInterface{
     positiveMark : number,
     negativeMark : number,
     correctAnswer : string,
-    id : 0
+    id : number
 }
 
 export interface testcasesInterface{
@@ -103,6 +103,18 @@ export interface response {
 
     //programmes
     programmes? : ProgrammeInterface[]
+    // mcqs
+    mcqs? : McqInterface[]
+
+    // testcases
+    testcases? : testcasesInterface[]
+    languages? : languageInterface[]
+}
+
+export interface languageInterface{
+    id : number,
+    languageName : string,
+    languageId : string
 }
 
 export interface backendResponse {

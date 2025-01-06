@@ -31,7 +31,9 @@ import com.example.model.Question;
 import com.example.model.Student;
 import com.example.model.Test;
 import com.example.model.Testcases;
+import com.example.model.Teststatus;
 import com.example.model.Question.QuestionCategory;
+import com.example.model.Status.status;
 import com.example.service.admin.AdminService;
 import com.example.service.batch.BatchService;
 import com.example.service.college.CollegeService;
@@ -41,6 +43,7 @@ import com.example.service.programme.ProgrammeService;
 import com.example.service.student.StudentService;
 import com.example.service.test.TestService;
 import com.example.service.testcases.TestcasesService;
+import com.example.service.teststatus.TestStatusService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -59,10 +62,11 @@ public class AdminController {
     private final ProgrammeService programmeService;
     private final TestcasesService testcasesService;
     private final LanguageService languageService;
+    private final TestStatusService testStatusService;
 
     public AdminController(AdminService adminservice, StudentService studentservice, CollegeService collegeService,
             BatchService batchService, TestService testService, McqService mcqService,
-            ProgrammeService programmeService,TestcasesService testcasesService,LanguageService languageService) {
+            ProgrammeService programmeService,TestcasesService testcasesService,LanguageService languageService,TestStatusService testStatusService) {
         this.adminservice = adminservice;
         this.studentservice = studentservice;
         this.collegeService = collegeService;
@@ -72,6 +76,7 @@ public class AdminController {
         this.programmeService = programmeService;
         this.testcasesService = testcasesService;
         this.languageService = languageService;
+        this.testStatusService = testStatusService;
     }
 
 
@@ -268,6 +273,9 @@ public class AdminController {
         if (test == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
+        
+        if(test.getTestStatus() != status.NotStarted) 
+           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 
         ArrayList<mcqRegisterRequest> mcqUnsuceesfull = new ArrayList<>();
         ArrayList<McqRegister> mcqSuceesfull = new ArrayList<>();
@@ -367,7 +375,6 @@ public class AdminController {
 
     record getMcqResponse(List<McqRegister> mcqs){}
 
-
     @GetMapping("/programme/get/{id}")
     public ResponseEntity<getProgrammeResponse> getProgrammes(@PathVariable("id") int id){
         try{
@@ -391,6 +398,9 @@ public class AdminController {
 
         Test test = testService.findTotalQuestion(programmes.get(0).testId());
         if (test == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+
+       if(test.getTestStatus() == status.Completed || test.getTestStatus() == status.Running)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 
         int programmeCount = programmeService.getAllProgrammesCount(test.getId());
@@ -457,6 +467,9 @@ public class AdminController {
             try {
                 Programme programme = programmeService.getProgramme(testcase.programmeId());
                 if ( programme == null) throw new Exception("Programme Id is wrong");
+                if (programme.getTest().getTestStatus() == status.Running || programme.getTest().getTestStatus() == status.Completed)
+                    throw new Exception("Test is Running or Completed");
+
                 Testcases newTestcaseInstance = new Testcases();
                 newTestcaseInstance.setInput(testcase.input());
                 newTestcaseInstance.setOutput(testcase.output());

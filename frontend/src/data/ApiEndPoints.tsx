@@ -19,4 +19,9 @@ export const ApiEndPoints = {
     getTests : "http://localhost:5151/api/v1/admin/tests/get",
     getMcqs : "http://localhost:5151/api/v1/admin/mcq/get/" , // add id,
     getProgrammes : "http://localhost:5151/api/v1/admin/programme/get/" , // add id
+    getStudentTest : "http://localhost:5151/api/v1/student/tests/get",
+    getStudentMcqs : "http://localhost:5151/api/v1/student/mcq/get/" , // add id,
+    getStudentProgrammes : "http://localhost:5151/api/v1/student/programme/get/" , // add id
+    getTestcases : "http://localhost:5151/api/v1/student/testcases/get/" , // add id
+    getLanguage : "http://localhost:5151/api/v1/student/language/get"
 }

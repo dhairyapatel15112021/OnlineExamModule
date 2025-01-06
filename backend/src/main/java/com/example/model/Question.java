@@ -1,7 +1,7 @@
 package com.example.model;
 
 public class Question {
-    static public enum QuestionCategory{
+    public enum QuestionCategory{
         Apptitude,
         Technical,
         Programming

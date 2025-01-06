@@ -23,7 +23,7 @@ public class McqResponse {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "response" , nullable = false)
+    @Column(name = "response" , nullable = true)
     private String response;
 
     @Column(name = "is_true" , nullable = false)

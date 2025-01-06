@@ -29,4 +29,8 @@ public class LanguageService {
     public Languages getLanguage(int languageId) {
        return languageRepository.findByLanguageId(languageId);
     }
+
+    public List<Languages> getLanguage() {
+        return languageRepository.findAll();
+    }
 }

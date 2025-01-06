@@ -1,7 +1,7 @@
 import { selector } from "recoil"
 import { backendCall } from "../../helperFunctions/backendCall";
 import { ApiEndPoints } from "../../data/ApiEndPoints";
-
+// fetch clgs
 export const Colleges = selector({
     key: "uniqueCollegeSelector",
     get: async () => {

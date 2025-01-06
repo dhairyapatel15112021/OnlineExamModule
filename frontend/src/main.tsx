@@ -17,6 +17,11 @@ import { Test } from './pages/admin/Test.tsx'
 import { Mcq } from './pages/admin/Test/Mcq.tsx'
 import { Programme } from './pages/admin/Test/Programme.tsx'
 import { Testcases } from './pages/admin/Test/Testcases.tsx'
+import { StudentTests } from './pages/student/StudentTests.tsx'
+import { StudentTest } from './pages/student/test/StudentTest.tsx'
+import { StudentMcq } from './pages/student/test/StudentMcq.tsx'
+import { StudentProgramme } from './pages/student/test/StudentProgramme.tsx'
+import { StudentDashboard } from './pages/student/StudentDashboard.tsx'
 
 // toast library for proper error and success msg for everything,
 // if needed regex for email , password phonenumber etc?.
@@ -29,6 +34,10 @@ import { Testcases } from './pages/admin/Test/Testcases.tsx'
 // crud operations or APIS for every page like update , delete etc.
 // change loader
 // form reset at every succesful form submission
+// at every login / logout our selectors should check test hit the backend to get the proper result.
+
+// deploy , document , video
+
 
 export const Loader = () => {
   return(
@@ -54,7 +63,18 @@ const router = createBrowserRouter([
       {path : "results" , element : <Suspense fallback={<Loader/>}><Results/></Suspense> },
       {path : "college" , element : <Suspense fallback={<Loader/>}><College/></Suspense> },
       {path : "batch",element : <Suspense fallback={<Loader/>}> <Batch/></Suspense>}
-    ]}
+    ]},
+    {
+      path : "student"  ,  children : [
+        {path : "dashboard", element : <Suspense fallback={<Loader/>}><StudentDashboard/></Suspense>},
+        { path : "tests" , element : <Suspense fallback={<Loader/>}>{<StudentTests/>}</Suspense>},
+        {path : "tests/:id" , element : <Suspense fallback={<Loader/>}><StudentTest/></Suspense> , children : [
+          {path : "mcq" , element : <Suspense fallback={<Loader/>}><StudentMcq/></Suspense> },
+          {path : "programme" , element : <Suspense fallback={<Loader/>}>{<StudentProgramme/>}</Suspense>}
+        ]},
+        { path : "results" , },
+      ]
+    }
   ]}
 ]
 )

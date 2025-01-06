@@ -25,11 +25,7 @@ public class ProgrammeResponse {
     @Column(name = "id")
     private int id;
 
-    // @Column(name = "response" , nullable = false , columnDefinition = "TEXT")
-    // @Lob
-    // private String response;
-
-    @Column(name = "is_true" , nullable = false)
+    @Column(name = "is_true" , nullable = true)
     private boolean isTrue = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
