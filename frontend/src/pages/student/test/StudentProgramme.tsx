@@ -62,7 +62,7 @@ export const StudentProgramme = () => {
         <div className='h-full w-full border border-black rounded-md p-3'>
           <div className="flex flex-wrap gap-2">
             {
-              programmes?.map((item, index) => {
+              programmes?.map((_, index) => {
                 return (
                   <button onClick={() => setQuestinIndex(index)} className='px-4 py-2 bg-blue text-white rounded-md h-fit w-fit'>{index + 1}</button>
                 )

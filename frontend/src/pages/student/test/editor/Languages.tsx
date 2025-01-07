@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios';
 import { languageInterface } from '../../../../data/Interface';
 import { backendCall } from '../../../../helperFunctions/backendCall';
 import { ApiEndPoints } from '../../../../data/ApiEndPoints';

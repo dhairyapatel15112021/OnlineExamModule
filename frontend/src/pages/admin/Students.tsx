@@ -81,7 +81,7 @@ export const Students = () => {
               <select onChange={onChangeFunction} defaultValue="Batch" name="batchId" className="w-[40vw] md:w-[30vw] focus:outline-none border h-fit py-[0.60rem] px-2 rounded-md text-base md:text-lg">
                 <option disabled value="Batch">Batch</option>
                 {
-                  batches.map((item,index)=>{
+                  batches.map((item,_)=>{
                     return (
                       <option value={item.id} key={item.id}>{item.year} </option>
                     )
@@ -91,7 +91,7 @@ export const Students = () => {
               <select onChange={onChangeFunction} defaultValue="College" name="clgId" className="w-[40vw] md:w-[30vw] focus:outline-none border h-fit py-[0.60rem] px-2 rounded-md text-base md:text-lg">
                 <option disabled value="College">College</option>
                 {
-                  colleges.map((item,index)=>{
+                  colleges.map((item,_)=>{
                     return (
                       <option value={item.id} key={item.id}>{item.name} </option>
                     )
@@ -113,7 +113,7 @@ export const Students = () => {
                 </div>
                 <div className='flex flex-wrap gap-4 mt-7'>
                   {
-                    students.map((item, index) => {
+                    students.map(() => {
                       return (
                         <div></div>
                         // <div key={index} className='px-5 py-2 bg-blue text-white rounded-md flex flex-col gap-2'>
