@@ -55,7 +55,7 @@ export const Batch = () => {
             <div className='text-lg md:text-base md:font-medium font-normal'>Already Existed Batch Are Below</div>
             <div className='flex flex-wrap gap-4 mt-7'>
             {
-              batches.map((item,index)=>{
+              batches.map((item,_)=>{
                 return(
                   <div key={item.id} className='bg-blue text-white px-5 py-2 w-fit h-fit self-end border border-blue text-xl tracking-widest hover:bg-white hover:text-blue rounded-md text-nowrap'>{item.year}</div>
                 )

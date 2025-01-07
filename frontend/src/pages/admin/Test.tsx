@@ -1,9 +1,9 @@
-import { Outlet, useNavigate, useParams } from 'react-router-dom'
+import { Outlet, useParams } from 'react-router-dom'
 import { useRecoilValue } from 'recoil';
 import { TestAtom } from '../../store/atoms/TestAtom';
 import { TestInterface } from '../../data/Interface';
 import { NavLink } from 'react-router-dom';
-import { useEffect } from 'react';
+
 
 export const Test = () => {
     const {id} = useParams();

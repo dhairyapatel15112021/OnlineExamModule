@@ -15,7 +15,7 @@ export const StudentTests = () => {
                 tests?.length != 0 ?
                     <div className='w-[100vw] flex justify-start flex-wrap pl-[5vw] lg:pl-[3vw] lg:gap-x-[3vw] gap-y-[2vh] lg:gap-y-[1.5vh]'>
                         {
-                            tests?.map((item, index) => {
+                            tests?.map((item, _) => {
                                 return (
                                     <Card to={`/student/tests/${item.id}/mcq`} key={item.id} text={item.title}></Card>
                             )

@@ -72,7 +72,7 @@ export const College = () => {
             </div>
             <div className='flex flex-wrap gap-4 mt-7'>
               {
-                colleges.map((item, index) => {
+                colleges.map((item, _) => {
                   return (
                     <div key={item.id} className='px-5 py-2 bg-blue text-white rounded-md flex flex-col gap-2'>
                       <div className='flex items-center gap-2'>

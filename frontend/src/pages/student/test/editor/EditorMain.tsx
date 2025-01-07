@@ -7,10 +7,10 @@ const defaultCodeEditorContent = "\n\n//  select the language and code here";
 
 export const EditorMain = () => {
     const [code, setCode] = useState(defaultCodeEditorContent);
-    const [outputDetails, setOutputDetails] = useState(null);
+    //const [outputDetails, setOutputDetails] = useState(null);
     const [language, setLanguage] = useState("java");
-    const [processing, setProcessing] = useState(null);
-    const [theme, setTheme] = useState("vs-dark"); // we can create atom for it and use it in this and CodeEditorWindow Component
+    //const [processing, setProcessing] = useState(null);
+    const [theme, _] = useState("vs-dark"); // we can create atom for it and use it in this and CodeEditorWindow Component
 
     return (
         <div className='h-[83vh] w-[60vw] p-2'>

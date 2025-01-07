@@ -65,7 +65,7 @@ export const Tests = () => {
           <select onChange={onChangeFunction} defaultValue="Batch" name="batchId" className="w-[40vw] md:w-[30vw] focus:outline-none border h-fit py-[0.60rem] px-2 rounded-md text-base md:text-lg">
             <option disabled value="Batch">Batch</option>
             {
-              batches.map((item, index) => {
+              batches.map((item, _) => {
                 return (
                   <option value={item.id} key={item.id}>{item.year} </option>
                 )
@@ -96,7 +96,7 @@ export const Tests = () => {
                   <div className='col-span-2'>Batch</div>
               </div>
               {
-                tests.map((item, index) => {
+                tests.map((item, _) => {
                   return (
                     <Link to={`/admin/test/${item.id}/mcq`} key={item.id} className='p-2 grid grid-rows-1 grid-cols-9 place-items-center bg-blue text-white rounded-md font-extralight'>
                       <div className='col-span-2'>{item.title}</div>
