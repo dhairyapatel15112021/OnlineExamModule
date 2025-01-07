@@ -15,7 +15,7 @@ public class CustomCorsFilter implements CorsConfigurationSource {
     @Override
     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173","https://online-exam-module-git-final-dhairya-patels-projects-b441be05.vercel.app/","https://roima-exam-module.vercel.app"));
+        config.setAllowedOrigins(List.of("http://localhost:5173","https://online-exam-module-git-final-dhairya-patels-projects-b441be05.vercel.app","https://roima-exam-module.vercel.app"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true); // Allow cookies and credentials
