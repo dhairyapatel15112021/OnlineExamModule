@@ -20,6 +20,7 @@ import com.example.dto.Response;
 import com.example.dto.SubmissionResponse;
 import com.example.dto.TestGet;
 import com.example.dto.TestcasesGet;
+import com.example.dto.TeststatusGet;
 import com.example.model.Languages;
 import com.example.model.Mcq;
 import com.example.model.McqResponse;
@@ -367,7 +368,7 @@ public class StudentController {
 
     @PostMapping("/test/end/{testId}")
     @Transactional
-    public ResponseEntity<Teststatus> endTestRegister(HttpServletRequest request, @PathVariable("testId") int testId , @RequestBody endTestRegister endTest){
+    public ResponseEntity<TeststatusGet> endTestRegister(HttpServletRequest request, @PathVariable("testId") int testId , @RequestBody endTestRegister endTest){
         try{
             int studentId = Integer.parseInt(request.getAttribute("id").toString());
 
@@ -417,7 +418,9 @@ public class StudentController {
             testService.saveTest(test);
             Teststatus savedStatus = testStatusService.saveTestStatus(Status);
 
-            return ResponseEntity.status(HttpStatus.OK).body(savedStatus);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                new TeststatusGet(savedStatus.getId(), savedStatus.getTestStatus(), testId, studentId, apptitudeQuestionMark, technicalQuestionMark, programminQuestionMark)
+            );
         }
         catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(null);
@@ -426,15 +429,17 @@ public class StudentController {
 
     record endTestRegister(List<mcqResponseRegisterRequest> mcqs , List<programmeResponseRequest> programmes){}
     
-    @PostMapping("/test/result/{testId}")
-    public ResponseEntity<List<Teststatus>> getResults(HttpServletRequest request){
+    @PostMapping("/test/result")
+    public ResponseEntity<List<TeststatusGet>> getResults(HttpServletRequest request){
         try{
             int studentId = Integer.parseInt(request.getAttribute("id").toString());
             List<Teststatus> status = testStatusService.getTeststatus(studentId);
             if(status.isEmpty()){
                 throw new Exception("Not Attempted");
             }
-            return ResponseEntity.status(HttpStatus.OK).body(status);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                status.stream().map(s -> new TeststatusGet(s.getId(), s.getTestStatus(), s.getTest().getId(), studentId, s.getApptitudeMarks(),s.getTechnicalMarks(), s.getProgrammingMarks())).toList()
+            );
         }
         catch(Exception e){
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(null);

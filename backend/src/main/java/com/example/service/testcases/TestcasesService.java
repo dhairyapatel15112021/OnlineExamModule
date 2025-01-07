@@ -29,4 +29,8 @@ public class TestcasesService {
             return false;
         }
     }
+
+    public List<Testcases> getTestcases() {
+      return testcasesRepository.findAll();
+    }
 }

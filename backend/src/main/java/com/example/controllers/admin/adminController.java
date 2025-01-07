@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.dto.McqRegister;
 import com.example.dto.ProgrammeRegister;
 import com.example.dto.TestGet;
+import com.example.dto.TestcasesGet;
 import com.example.model.Batch;
 import com.example.model.College;
 import com.example.model.Languages;
@@ -500,6 +501,26 @@ public class AdminController {
 
     record testcasesRegisterResponse(List<testcasesRegisterRequest> success, List<testcasesRegisterRequest> failure) {
     };
+
+    @GetMapping("testcases/get/{programmeId}")
+    public ResponseEntity<getTestcasesResponse> getTestCases(@PathVariable("programmeId") int programmeId){
+        try{
+            List<Testcases> testcases = testcasesService.getTestcases();
+            if(testcases.isEmpty()){
+                throw new Exception("No testcases");
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(new getTestcasesResponse(
+                testcases.stream().map(testcase -> new TestcasesGet(testcase.getId(), programmeId , testcase.getInput(),
+                        testcase.getOutput())).toList()));
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new getTestcasesResponse(List.of()));
+        }
+    }
+
+    record getTestcasesResponse(List<TestcasesGet> testcases) {
+    }
 
     @PostMapping("/register/languages")
     public ResponseEntity<Boolean> registerLanguages(@RequestBody List<Languages> languages){
