@@ -25,7 +25,7 @@ export const Languages = ({onchange} : any) => {
   return (
     <select name='languageId' onChange={(event : any) =>  onchange(event.target.value?.split(' ')?.[0]?.toLowerCase())} className='p-2 text-base bg-blue text-white rounded-md focus:outline-none h-[5vh]'>
         {
-            language?.map((item,index)=>{
+            language?.map((item)=>{
                 return(
                     <option value={item.languageName}>{item.languageName}</option>
                 )
