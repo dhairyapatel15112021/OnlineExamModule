@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ProgrammeInterface, TestInterface } from '../../../data/Interface';
 import { OnFileChange } from '../../../helperFunctions/OnFileChange';
@@ -111,7 +111,7 @@ export const Programme = () => {
                 <div>Test</div>
               </div>
               {
-                programmes?.map((item, index) => {
+                programmes?.map((item) => {
                   return (
                     <Link to={`/admin/test/${item.testId}/programme/${item.id}`} key={item.id} className='p-2 grid grid-rows-1 grid-cols-9 place-items-center bg-blue text-white rounded-md font-extralight'>
                       <div className='col-span-6'>{item.questionDescription}</div>
