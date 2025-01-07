@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
@@ -20,8 +21,8 @@ public class CustomCorsFilter implements CorsConfigurationSource {
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true); // Allow cookies and credentials
 
-        // UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        // source.registerCorsConfiguration("/**", config); // Apply to all endpoints
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config); // Apply to all endpoints
 
         return config;
     }
