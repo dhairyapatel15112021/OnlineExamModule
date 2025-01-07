@@ -135,7 +135,7 @@ export const Mcq = () => {
                 <div>Test</div>
               </div>
               {
-                mcqs?.map((item, index) => {
+                mcqs?.map((item) => {
                   return (
                     <div key={item.id} className='p-2 grid grid-rows-1 grid-cols-10 place-items-center bg-blue text-white rounded-md font-extralight'>
                       <div className='col-span-3'>{item.questionDescription}</div>
