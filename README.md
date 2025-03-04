@@ -11,7 +11,8 @@ The **Online Examination System** is a full-stack application designed to conduc
 - **Question Management** – Add MCQs categorized into Logical, Technical, and Programming.  
 - **Exam Management** – Create exams with a mix of difficulty levels and categories.  
 - **Result Viewing** – View exam summaries and detailed results.  
-- **Passing Criteria** – Set and enforce passing scores.  
+- **Passing Criteria** – Set and enforce passing scores.
+- **Import Data** – Bulk import students & questions from Excel.    
 
 #### Examinees  
 - **Question Navigation** – Move back and forth between questions.  
@@ -26,7 +27,6 @@ The **Online Examination System** is a full-stack application designed to conduc
 #### Examinees  
 - **Code Editor** – Supports limited programming languages with syntax highlighting.  
 - **Compile & Run** – Execute programs inside the built-in environment.  
-- **Import Data** – Bulk import students & questions from Excel.  
 
 ## Tech Stack  
 - **Frontend**: React.js  
