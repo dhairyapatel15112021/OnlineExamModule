@@ -26,7 +26,6 @@ The **Online Examination System** is a full-stack application designed to conduc
 #### Examinees  
 - **Code Editor** – Supports limited programming languages with syntax highlighting.  
 - **Compile & Run** – Execute programs inside the built-in environment.  
-
 - **Import Data** – Bulk import students & questions from Excel.  
 
 ## Tech Stack  
